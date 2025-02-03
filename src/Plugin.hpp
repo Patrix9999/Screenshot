@@ -23,7 +23,7 @@ namespace GOTHIC_NAMESPACE
 
 		// Border fix for fullscreen mode
 		auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
-		SetAppCompatData(12, 0);
+		if (SetAppCompatData) SetAppCompatData(12, 0);
 	}
 
 	void Game_Init()
