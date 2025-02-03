@@ -11,6 +11,14 @@ namespace GOTHIC_NAMESPACE
 	unsigned long screenshot_jpg_quality = 95;
 	bool screenshot_border_fix = true;
 
+	bool IsUsingDirectX11()
+	{
+		DDDEVICEIDENTIFIER2 identifier;
+
+		reinterpret_cast<zCRnd_D3D*>(zrenderer)->xd3d_pdd7->GetDeviceIdentifier(&identifier, NULL);
+		return strcmp(identifier.szDriver, "DirectX11") == 0;
+	}
+
 	void UpdateScreenInfo()
 	{
 		// Update screen information
@@ -85,7 +93,9 @@ namespace GOTHIC_NAMESPACE
 
 	void CaptureScreenshot()
 	{
-		if (!zCCamera::activeCam)
+		// Hacky fix for crash inside the menu while using dx11 backend
+		static const bool dx11_used = IsUsingDirectX11();
+		if (dx11_used && !zCCamera::activeCam)
 			return;
 
 		zCTextureConvert* tex_cvt = zrenderer->CreateTextureConvert();
