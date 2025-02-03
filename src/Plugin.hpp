@@ -19,11 +19,11 @@ namespace GOTHIC_NAMESPACE
 
 	void Game_EntryPoint()
 	{;
-		ShowConsole();
+		//ShowConsole();
 
 		// Border fix for fullscreen mode
-		//auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
-		//SetAppCompatData(12, 0);
+		auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
+		SetAppCompatData(12, 0);
 	}
 
 	void Game_Init()
