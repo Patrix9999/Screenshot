@@ -6,6 +6,7 @@
 
 // Custom headers
 #include "GfxFileWriters.h"
+#include "Config.h"
 
 // Add your plugin files here
 #include "Screenshot.hpp"

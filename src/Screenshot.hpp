@@ -6,56 +6,17 @@ namespace GOTHIC_NAMESPACE
 	int screen_height = 0;
 	int screen_bpp = 0;
 
+	std::string screenshot_sound = "carve02.wav";
+	std::string screenshot_file_type = "jpg";
+	unsigned long screenshot_jpg_quality = 95;
+	bool screenshot_border_fix = true;
+
 	void UpdateScreenInfo()
 	{
 		// Update screen information
 		screen_width = zoptions->ReadInt("VIDEO", "zVidResFullscreenX", 800);
 		screen_height = zoptions->ReadInt("VIDEO", "zVidResFullscreenY", 600);
 		screen_bpp = zoptions->ReadInt("VIDEO", "zVidResFullscreenBPP", 32);
-	}
-
-	// Function to copy raw image data to clipboard (useful for debugging)
-	bool CopyToClipboard(const void* pPixels, int width, int height, int bytesPerPixel)
-	{
-		if (!pPixels) return false;
-
-		// Define bitmap info
-		BITMAPINFO bmi = {};
-		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-		bmi.bmiHeader.biWidth = width;
-		bmi.bmiHeader.biHeight = -height;  // Negative height to store it top-down
-		bmi.bmiHeader.biPlanes = 1;
-		bmi.bmiHeader.biBitCount = bytesPerPixel * 8;
-		bmi.bmiHeader.biCompression = BI_RGB;
-		bmi.bmiHeader.biSizeImage = width * height * bytesPerPixel;
-
-		// Allocate memory for DIB
-		HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + bmi.bmiHeader.biSizeImage);
-		if (!hMem) return false;
-
-		void* pMem = GlobalLock(hMem);
-		if (!pMem) {
-			GlobalFree(hMem);
-			return false;
-		}
-
-		// Copy the BITMAPINFOHEADER
-		memcpy(pMem, &bmi.bmiHeader, sizeof(BITMAPINFOHEADER));
-		// Copy pixel data after the header
-		memcpy((BYTE*)pMem + sizeof(BITMAPINFOHEADER), pPixels, bmi.bmiHeader.biSizeImage);
-
-		GlobalUnlock(hMem);
-
-		// Open clipboard and set the data
-		if (OpenClipboard(nullptr)) {
-			EmptyClipboard();
-			SetClipboardData(CF_DIB, hMem);
-			CloseClipboard();
-			return true;
-		}
-
-		GlobalFree(hMem);
-		return false;
 	}
 
 	std::string GetScreenshotFilePath(const std::string& extension)
@@ -74,6 +35,17 @@ namespace GOTHIC_NAMESPACE
 		screenshot_path += "." + extension;
 
 		return screenshot_path;
+	}
+
+	void ReadConfigValues()
+	{
+		if (!ConfigFileExists())
+			CreateDefaultConfigFile();
+
+		screenshot_sound = GetConfigOptionString("Settings", "sfx");
+		screenshot_file_type = GetConfigOptionString("Settings", "file_type");
+		screenshot_jpg_quality = GetConfigOptionLong("Settings", "jpg_quality");
+		screenshot_border_fix = GetConfigOptionLong("Settings", "border_fix") != 0;
 	}
 
 	bool CreateScreensSubfolder(const std::string& filename)
@@ -99,11 +71,16 @@ namespace GOTHIC_NAMESPACE
 
 	void SaveScreenshotFile(void* buffer)
 	{
-		std::string screenshot_file_path = GetScreenshotFilePath("jpg");
+		std::string screenshot_file_path = GetScreenshotFilePath(screenshot_file_type);
 		if (!CreateScreensSubfolder(screenshot_file_path))
 			return;
 
-		SaveJPG(buffer, screen_width, screen_height, screenshot_file_path);
+		if (screenshot_file_type == "jpg")
+			SaveJPG(buffer, screen_width, screen_height, screenshot_file_path, screenshot_jpg_quality);
+		else if (screenshot_file_type == "png")
+			SavePNG(buffer, screen_width, screen_height, screenshot_file_path);
+		else if (screenshot_file_type == "bmp")
+			SaveBMP(buffer, screen_width, screen_height, screenshot_file_path);
 	}
 
 	void CaptureScreenshot()
@@ -120,7 +97,8 @@ namespace GOTHIC_NAMESPACE
 		tex_cvt->GetTextureBuffer(0, buffer, pitch_x_bytes);
 		SaveScreenshotFile(buffer);
 
-		zsound->PlaySound(screenshot_sfx, 0);
+		if (screenshot_sfx)
+			zsound->PlaySound(screenshot_sfx, 0);
 
 		zDELETE(tex_cvt);
 	}
