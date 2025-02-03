@@ -51,7 +51,11 @@ namespace GOTHIC_NAMESPACE
 			CreateDefaultConfigFile();
 
 		screenshot_sound = GetConfigOptionString("Settings", "sfx");
+
 		screenshot_file_type = GetConfigOptionString("Settings", "file_type");
+		if (screenshot_file_type.empty())
+			screenshot_file_type = "jpg";
+
 		screenshot_jpg_quality = GetConfigOptionLong("Settings", "jpg_quality");
 		screenshot_border_fix = GetConfigOptionLong("Settings", "border_fix") != 0;
 	}
