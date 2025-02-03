@@ -5,14 +5,34 @@ namespace GOTHIC_NAMESPACE
 	// NOTE! Callbacks won't be called by default, you need to uncomment
 	// hooks that will call specific callback
 
-	void Game_EntryPoint()
+	void ShowConsole()
 	{
+		AllocConsole();
 
+		FILE* file;
+		freopen_s(&file, "CONIN$", "r", stdin);
+		freopen_s(&file, "CONOUT$", "w", stdout);
+		freopen_s(&file, "CONOUT$", "w", stderr);
+
+		system("chcp 1250");
+	}
+
+	void Game_EntryPoint()
+	{;
+		ShowConsole();
+
+		// Border fix for fullscreen mode
+		//auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
+		//SetAppCompatData(12, 0);
 	}
 
 	void Game_Init()
 	{
+		// Initialize screen width, height, bpp
+		UpdateScreenInfo();
 
+		// Initialize sound effect
+		screenshot_sfx = zsound->LoadSoundFX("carve02.wav");
 	}
 
 	void Game_Exit()
@@ -27,7 +47,7 @@ namespace GOTHIC_NAMESPACE
 
 	void Game_Loop()
 	{
-
+	
 	}
 
 	void Game_PostLoop()
@@ -120,21 +140,21 @@ namespace GOTHIC_NAMESPACE
 
 	}
 
-	/*int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
+	int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
 	auto Hook_WinMain = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x004F3E10, 0x00506810, 0x005000F0, 0x00502D70)), &WinMain, Union::HookType::Hook_Detours);
 	int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 	{
 		Game_EntryPoint();
 		return Hook_WinMain(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-	}*/
+	}
 
-	/*void __fastcall oCGame_Init(oCGame* self, void* vtable);
+	void __fastcall oCGame_Init(oCGame* self, void* vtable);
 	auto Hook_oCGame_Init = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x00636F50, 0x0065D480, 0x006646D0, 0x006C1060)), &oCGame_Init, Union::HookType::Hook_Detours);
 	void __fastcall oCGame_Init(oCGame* self, void* vtable)
 	{
 		Hook_oCGame_Init(self, vtable);
 		Game_Init();
-	}*/
+	}
 
 	/*void __fastcall CGameManager_Done(CGameManager* self, void* vtable);
 	auto Hook_CGameManager_Done = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x00424850, 0x00427310, 0x004251A0, 0x004254E0)), &CGameManager_Done, Union::HookType::Hook_Detours);
