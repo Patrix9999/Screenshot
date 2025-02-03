@@ -1,9 +1,9 @@
 namespace GOTHIC_NAMESPACE
 {
-	auto AppWndProc_Original = (LRESULT(CALLBACK*)(HWND, zUWORD, WPARAM, LPARAM))zSwitch(0x00503770, 0x00503770, 0x00503770, 0x00503770);
+	auto AppWndProc_Original = (LRESULT(CALLBACK*)(HWND, zUWORD, WPARAM, LPARAM))zSwitch(0x004F4EE0, 0x005078E0, 0x00500A80, 0x00503770);
 
 	LRESULT CALLBACK AppWndProc(HWND hwnd, zUWORD msg, WPARAM wParam, LPARAM lParam);
-	auto Hook_AppWndProc = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x00503770, 0x00503770, 0x00503770, 0x00503770)), &AppWndProc, Union::HookType::Hook_Detours);
+	auto Hook_AppWndProc = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x004F4EE0, 0x005078E0, 0x00500A80, 0x00503770)), &AppWndProc, Union::HookType::Hook_Detours);
 	LRESULT CALLBACK AppWndProc(HWND hwnd, zUWORD msg, WPARAM wParam, LPARAM lParam)
 	{
 		Hook_AppWndProc.Disable();
@@ -29,7 +29,7 @@ namespace GOTHIC_NAMESPACE
 		return result;
 	}
 
-	auto Hook_oCGame_UpdateScreenResolution = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x006C2E00, 0x006C2E00, 0x006C2E00, 0x006C2E00)), &oCGame::Hook_UpdateScreenResolution, Union::HookType::Hook_Detours);
+	auto Hook_oCGame_UpdateScreenResolution = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x00638C50, 0x0065F1A0, 0x00666300, 0x006C2E00)), &oCGame::Hook_UpdateScreenResolution, Union::HookType::Hook_Detours);
 	void oCGame::Hook_UpdateScreenResolution()
 	{
 		Hook_oCGame_UpdateScreenResolution.Disable();
