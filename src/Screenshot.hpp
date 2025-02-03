@@ -71,7 +71,7 @@ namespace GOTHIC_NAMESPACE
 
 		std::string screenshot_path = "Screens/";
 		screenshot_path += ts_stream.str();
-		screenshot_path += "." + extension;
+		screenshot_path += extension;
 
 		return screenshot_path;
 	}
@@ -99,11 +99,11 @@ namespace GOTHIC_NAMESPACE
 
 	void SaveScreenshotFile(void* buffer)
 	{
-		std::string screenshot_file_path = GetScreenshotFilePath(".bmp");
+		std::string screenshot_file_path = GetScreenshotFilePath(".jpg");
 		if (!CreateScreensSubfolder(screenshot_file_path))
 			return;
 
-		SaveBMP(buffer, screen_width, screen_height, screenshot_file_path);
+		SaveJPG(buffer, screen_width, screen_height, screenshot_file_path);
 	}
 
 	void CaptureScreenshot()
