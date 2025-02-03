@@ -1,0 +1,7 @@
+# Visual Studio
+
+/.vs/
+
+# Build directories
+
+/out/
