@@ -108,6 +108,9 @@ namespace GOTHIC_NAMESPACE
 
 	void CaptureScreenshot()
 	{
+		if (!zCCamera::activeCam)
+			return;
+
 		zCTextureConvert* tex_cvt = zrenderer->CreateTextureConvert();
 		zrenderer->Vid_GetFrontBufferCopy(*tex_cvt);
 
