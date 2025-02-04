@@ -1,7 +1,6 @@
 namespace GOTHIC_NAMESPACE
 {
 	auto AppWndProc_Original = (LRESULT(CALLBACK*)(HWND, zUWORD, WPARAM, LPARAM))zSwitch(0x004F4EE0, 0x005078E0, 0x00500A80, 0x00503770);
-
 	LRESULT CALLBACK AppWndProc(HWND hwnd, zUWORD msg, WPARAM wParam, LPARAM lParam);
 	auto Hook_AppWndProc = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x004F4EE0, 0x005078E0, 0x00500A80, 0x00503770)), &AppWndProc, Union::HookType::Hook_Detours);
 	LRESULT CALLBACK AppWndProc(HWND hwnd, zUWORD msg, WPARAM wParam, LPARAM lParam)
@@ -38,5 +37,18 @@ namespace GOTHIC_NAMESPACE
 		UpdateScreenInfo();
 
 		Hook_oCGame_UpdateScreenResolution.Enable();
+	}
+
+	auto zInitOptions_Original = (void(*)())zSwitch(0x0046ADC0, 0x00473010, 0x0046F5C0, 0x004701F0);
+	void zInitOptions();
+	auto Hook_zInitOptions = Union::CreateHook(reinterpret_cast<void*>(zSwitch(0x0046ADC0, 0x00473010, 0x0046F5C0, 0x004701F0)), &zInitOptions, Union::HookType::Hook_Detours);
+	void zInitOptions()
+	{
+		Hook_zInitOptions.Disable();
+
+		zInitOptions_Original();
+		ReadConfigValues();
+
+		Hook_zInitOptions.Enable();
 	}
 }

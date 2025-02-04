@@ -19,15 +19,7 @@ namespace GOTHIC_NAMESPACE
 
 	void Game_EntryPoint()
 	{
-		// Read config values
-		ReadConfigValues();
 
-		// Border fix for fullscreen mode (compatibility mode for older games)
-		if (screenshot_border_fix)
-		{
-			auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
-			if (SetAppCompatData) SetAppCompatData(12, 0);
-		}
 	}
 
 	void Game_Init()
@@ -36,8 +28,8 @@ namespace GOTHIC_NAMESPACE
 		UpdateScreenInfo();
 
 		// Initialize sound effect
-		if (!screenshot_sound.empty())
-			screenshot_sfx = zsound->LoadSoundFX(screenshot_sound.c_str());
+		if (!screenshot_sound.IsEmpty())
+			screenshot_sfx = zsound->LoadSoundFX(screenshot_sound);
 	}
 
 	void Game_Exit()

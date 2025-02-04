@@ -6,8 +6,8 @@ namespace GOTHIC_NAMESPACE
 	int screen_height = 0;
 	int screen_bpp = 0;
 
-	std::string screenshot_sound = "carve02.wav";
-	std::string screenshot_file_type = "jpg";
+	zSTRING screenshot_sound = "carve02.wav";
+	zSTRING screenshot_file_type = "jpg";
 	unsigned long screenshot_jpg_quality = 95;
 	bool screenshot_border_fix = true;
 
@@ -27,7 +27,7 @@ namespace GOTHIC_NAMESPACE
 		screen_bpp = zoptions->ReadInt("VIDEO", "zVidResFullscreenBPP", 32);
 	}
 
-	std::string GetScreenshotFilePath(const std::string& extension)
+	std::string GetScreenshotFilePath(const zSTRING& extension)
 	{
 		auto now = std::chrono::system_clock::now();
 		auto now_time_t = std::chrono::system_clock::to_time_t(now);
@@ -40,24 +40,25 @@ namespace GOTHIC_NAMESPACE
 
 		std::string screenshot_path = "Screens/";
 		screenshot_path += ts_stream.str();
-		screenshot_path += "." + extension;
+		screenshot_path += ".";
+		screenshot_path += extension.ToChar();
 
 		return screenshot_path;
 	}
 
 	void ReadConfigValues()
 	{
-		if (!ConfigFileExists())
-			CreateDefaultConfigFile();
+		screenshot_sound = zoptions->ReadString("Screenshot", "sfx", screenshot_sound);
+		screenshot_file_type = zoptions->ReadString("Screenshot", "file_type", screenshot_file_type);
+		screenshot_jpg_quality = zoptions->ReadDWord("Screenshot", "jpg_quality", screenshot_jpg_quality);
+		screenshot_border_fix = zoptions->ReadBool("Screenshot", "border_fix", screenshot_border_fix);
 
-		screenshot_sound = GetConfigOptionString("Settings", "sfx");
-
-		screenshot_file_type = GetConfigOptionString("Settings", "file_type");
-		if (screenshot_file_type.empty())
-			screenshot_file_type = "jpg";
-
-		screenshot_jpg_quality = GetConfigOptionLong("Settings", "jpg_quality");
-		screenshot_border_fix = GetConfigOptionLong("Settings", "border_fix") != 0;
+		// Border fix for fullscreen mode (compatibility mode for older games)
+		if (screenshot_border_fix)
+		{
+			auto SetAppCompatData = reinterpret_cast<void(WINAPI*)(DWORD, DWORD)>(GetProcAddress(GetModuleHandleA("ddraw.dll"), "SetAppCompatData"));
+			if (SetAppCompatData) SetAppCompatData(12, 0);
+		}
 	}
 
 	bool CreateScreensSubfolder(const std::string& filename)
