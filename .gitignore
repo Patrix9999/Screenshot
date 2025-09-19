@@ -1,7 +1,7 @@
-# Visual Studio
-
-/.vs/
+# Project specific local files
+.vs/
+.vscode/
+.idea/
 
 # Build directories
-
 /out/
