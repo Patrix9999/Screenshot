@@ -34,7 +34,6 @@ namespace GOTHIC_NAMESPACE
 		Hook_oCGame_UpdateScreenResolution.Disable();
 
 		this->UpdateScreenResolution();
-		UpdateScreenInfo();
 
 		Hook_oCGame_UpdateScreenResolution.Enable();
 	}

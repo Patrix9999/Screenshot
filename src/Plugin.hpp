@@ -24,9 +24,6 @@ namespace GOTHIC_NAMESPACE
 
 	void Game_Init()
 	{
-		// Initialize screen width, height, bpp
-		UpdateScreenInfo();
-
 		// Initialize sound effect
 		if (!screenshot_sound.IsEmpty())
 			screenshot_sfx = zsound->LoadSoundFX(screenshot_sound);

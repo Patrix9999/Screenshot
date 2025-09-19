@@ -1,31 +1,13 @@
+#include "Screenshot.h"
+
 namespace GOTHIC_NAMESPACE
 {
 	zCSoundFX* screenshot_sfx = nullptr;
-
-	int screen_width = 0;
-	int screen_height = 0;
-	int screen_bpp = 0;
 
 	zSTRING screenshot_sound = "carve02.wav";
 	zSTRING screenshot_file_type = "jpg";
 	unsigned long screenshot_jpg_quality = 95;
 	bool screenshot_border_fix = true;
-
-	bool IsUsingDirectX11()
-	{
-		DDDEVICEIDENTIFIER2 identifier;
-
-		reinterpret_cast<zCRnd_D3D*>(zrenderer)->xd3d_pdd7->GetDeviceIdentifier(&identifier, NULL);
-		return strcmp(identifier.szDriver, "DirectX11") == 0;
-	}
-
-	void UpdateScreenInfo()
-	{
-		// Update screen information
-		screen_width = zoptions->ReadInt("VIDEO", "zVidResFullscreenX", 800);
-		screen_height = zoptions->ReadInt("VIDEO", "zVidResFullscreenY", 600);
-		screen_bpp = zoptions->ReadInt("VIDEO", "zVidResFullscreenBPP", 32);
-	}
 
 	std::string GetScreenshotFilePath(const zSTRING& extension)
 	{
@@ -82,39 +64,26 @@ namespace GOTHIC_NAMESPACE
 		return true;
 	}
 
-	void SaveScreenshotFile(void* buffer)
+	void SaveScreenshotFile(const void* buffer, const int width, const int height)
 	{
-		std::string screenshot_file_path = GetScreenshotFilePath(screenshot_file_type);
+		const std::string screenshot_file_path = GetScreenshotFilePath(screenshot_file_type);
 		if (!CreateScreensSubfolder(screenshot_file_path))
 			return;
 
 		if (screenshot_file_type == "jpg")
-			SaveJPG(buffer, screen_width, screen_height, screenshot_file_path, screenshot_jpg_quality);
+			SaveJPG(buffer, width, height, screenshot_file_path, screenshot_jpg_quality);
 		else if (screenshot_file_type == "png")
-			SavePNG(buffer, screen_width, screen_height, screenshot_file_path);
+			SavePNG(buffer, width, height, screenshot_file_path);
 		else if (screenshot_file_type == "bmp")
-			SaveBMP(buffer, screen_width, screen_height, screenshot_file_path);
+			SaveBMP(buffer, width, height, screenshot_file_path);
 	}
 
 	void CaptureScreenshot()
 	{
-		// Hacky fix for crash inside the menu while using dx11 backend
-		static const bool dx11_used = IsUsingDirectX11();
-		if (dx11_used && !zCCamera::activeCam)
-			return;
-
-		zCTextureConvert* tex_cvt = zrenderer->CreateTextureConvert();
-		zrenderer->Vid_GetFrontBufferCopy(*tex_cvt);
-
-		void* buffer;
-		int pitch_x_bytes = screen_width * screen_bpp / 8;
-
-		tex_cvt->GetTextureBuffer(0, buffer, pitch_x_bytes);
-		SaveScreenshotFile(buffer);
+		const Screenshot screenshot(hWndApp);
+		SaveScreenshotFile(screenshot.GetPixels(), screenshot.GetWidth(), screenshot.GetHeight());
 
 		if (screenshot_sfx)
 			zsound->PlaySound(screenshot_sfx, 0);
-
-		zDELETE(tex_cvt);
 	}
 }

@@ -8,6 +8,6 @@
 #include "GfxFileWriters.h"
 
 // Add your plugin files here
-#include "Screenshot.hpp"
+#include "ScreenshotUtils.hpp"
 #include "Hooks.hpp"
 #include "Plugin.hpp"
