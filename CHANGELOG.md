@@ -1,2 +1,2 @@
-- Fixed crashes on Multi Platform version of the plugin caused by a bug in gothic-api
-- Replaced saving plugin options in custom Screenshot.ini with regular Gothic.ini usage (Screenshot section)
+- Moved capturing screenshot logic to `Screenshot` class
+- `Screenshot` class will use Windows API to capture HBITMAP from game window (instead of operating on game API, that won't work perfectly for dx11 or other similar mods)
