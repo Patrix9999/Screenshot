@@ -1,2 +1,2 @@
-- Moved capturing screenshot logic to `Screenshot` class
-- `Screenshot` class will use Windows API to capture HBITMAP from game window (instead of operating on game API, that won't work perfectly for dx11 or other similar mods)
+- Fixed issues with initialization of GDIPlus, now it's only being done when plugin gets loaded in `DllMain` function
+- Changed default `jpeg_quality` value to `100`
