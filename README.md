@@ -14,7 +14,7 @@ Below you can find the default configuration with option descriptions:
 [Screenshot]
 sfx=carve02.wav			; Sound that is being played when you press PrintScreen key, can be set to empty text for no sound
 file_type=jpg			; Produced screenshot file type, supported types are: jpg, png, bmp
-jpg_quality=95			; JPG quality, set this value in range <0, 100>
+jpg_quality=100			; JPG quality, set this value in range <0, 100>
 border_fix=1			; Enable border fix for fullscreen game? Useful for ppl that are playing on System Pack
 ```
 

@@ -6,7 +6,7 @@ namespace GOTHIC_NAMESPACE
 
 	zSTRING screenshot_sound = "carve02.wav";
 	zSTRING screenshot_file_type = "jpg";
-	unsigned long screenshot_jpg_quality = 95;
+	unsigned long screenshot_jpg_quality = 100;
 	bool screenshot_border_fix = true;
 
 	std::string GetScreenshotFilePath(const zSTRING& extension)
