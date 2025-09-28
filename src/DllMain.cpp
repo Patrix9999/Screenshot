@@ -1,6 +1,9 @@
 #include <Windows.h>
 #include <ZenGin/zGothicAPI.h>
 
+#include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
+
 BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
 {
     switch (fdwReason)
@@ -34,6 +37,13 @@ BOOL WINAPI DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpvReserved)
             default:
                 return FALSE;
         }
+
+        {
+            ULONG_PTR token;
+            Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+            GdiplusStartup(&token, &gdiplusStartupInput, nullptr);
+        }
+
         break;
 
     case DLL_PROCESS_DETACH:

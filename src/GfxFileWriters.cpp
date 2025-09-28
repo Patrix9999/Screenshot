@@ -6,26 +6,6 @@
 
 #include <fstream>
 
-// global GDI Plus RAII
-class GDIPlusManager
-{
-public:
-    GDIPlusManager()
-    {
-        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
-        GdiplusStartup(&token, &gdiplusStartupInput, nullptr);
-    }
-
-    ~GDIPlusManager()
-    {
-        Gdiplus::GdiplusShutdown(token);
-    }
-
-    ULONG_PTR token;
-};
-
-static GDIPlusManager gdi_plus;
-
 // Helper function to get encoder CLSID
 static int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 {
